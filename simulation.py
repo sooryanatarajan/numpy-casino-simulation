@@ -60,7 +60,7 @@ def run_simulation():
         
         died=before-after
 
-        stats.display_stats_round(i+1,player_bet,player_balance,player_status,player_behaviour, died)
+        stats.display_stats_round(i+1,player_bet,player_balance,player_status, died)
     overallalive=player_status.sum()
     dead=beforeoverall-overallalive
     stats.display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive)
