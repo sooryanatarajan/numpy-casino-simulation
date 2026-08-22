@@ -2,6 +2,7 @@ import numpy as np
 import games
 import config
 import stats
+import time
 rng=np.random.default_rng()
 
 player_number=np.arange(config.players)
@@ -31,7 +32,8 @@ player_taken[choose_moderate]=True
 def run_simulation():
     beforeoverall=player_status.sum()
     for i in range(config.rounds):
-
+        choice=rng.integers(0,2)
+        old=player_balance.copy()
         player_bet=np.zeros_like(player_balance)
         cmask= (player_status) & (player_behaviour==0)
         rmask= (player_status) & (player_behaviour==2)
@@ -39,13 +41,16 @@ def run_simulation():
         high = np.maximum(
     (player_balance[cmask] * 0.1).astype(int),
     config.minbet
+
 )
         player_bet[cmask]=rng.integers(config.minbet, high+1)
+
         high = np.maximum(
     (player_balance[nmask] * 0.3).astype(int),
     config.minbet
 )
         player_bet[nmask]=rng.integers(config.minbet, high+1)
+
         high = np.maximum(
     (player_balance[rmask] * 0.5).astype(int),
     config.minbet
@@ -53,14 +58,20 @@ def run_simulation():
         player_bet[rmask]=rng.integers(config.minbet,high+1)
 
         before=player_status.sum()
+        if choice==0:
+            games.coin_toss(player_balance, player_status, player_bet)
+            gamename= "COIN TOSS"
+        elif choice==1:
+            games.roulette(player_balance,player_status,player_bet,player_behaviour)
+            gamename= "ROULETTE"
 
-        games.coin_toss(player_balance, player_status, player_bet)
 
         after=player_status.sum()
+        new=player_balance.copy()
+        profit=old-new
         
-        died=before-after
-
-        stats.display_stats_round(i+1,player_bet,player_balance,player_status, died)
+        stats.display_stats_round(i+1,player_bet,player_balance,player_status, before-after,profit,gamename)
+        time.sleep(1)
     overallalive=player_status.sum()
     dead=beforeoverall-overallalive
     stats.display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive)
