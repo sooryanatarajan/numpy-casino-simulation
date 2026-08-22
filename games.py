@@ -91,6 +91,39 @@ def roulette(player_balance, player_status, player_bets, player_behaviour):
     player_status[condition]=True
     player_status[~condition]=False
 
+def slots(player_balance, player_status, player_bets, player_behaviour):
+    reel1=np.zeros_like(player_balance)
+    reel2=np.zeros_like(player_balance)
+    reel3=np.zeros_like(player_balance)
+    reel1[player_status]=rng.choice(config.slot_symbols, p=config.slot_probabilities,size=player_status.sum())
+    reel2[player_status]=rng.choice(config.slot_symbols, p=config.slot_probabilities,size=player_status.sum())
+    reel3[player_status]=rng.choice(config.slot_symbols, p=config.slot_probabilities,size=player_status.sum())
+    threecombo=(reel1 == reel2) & (reel2 == reel3)
+    twocombo = ((reel1==reel2) | (reel2==reel3) | (reel3==reel1)) & (~threecombo)
+    nocombo = (~threecombo) & (~twocombo)
+    cherrypot = threecombo & (reel1==0)
+    lemonpot = threecombo & (reel1==1)
+    bellpot = threecombo & (reel1==2)
+    starpot = threecombo & (reel1==3)
+    diamondpot = threecombo & (reel1==4)
+    crownpot = threecombo & (reel1==5)
+
+    player_balance[cherrypot] += player_bets[cherrypot]*5
+    player_balance[lemonpot] += player_bets[lemonpot]*6
+    player_balance[bellpot] += player_bets[bellpot]*8
+    player_balance[starpot] += player_bets[starpot]*10
+    player_balance[diamondpot] += player_bets[diamondpot]*20
+    player_balance[crownpot] += player_bets[crownpot]*50
+    player_balance[twocombo] += 0
+    player_balance[nocombo]-=player_bets[nocombo]
+    condition = player_balance>config.minimum_balance
+    player_status[condition]=True
+    player_status[~condition]=False
+
+
+
+    
+
 
 
 

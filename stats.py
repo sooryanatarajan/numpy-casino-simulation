@@ -22,25 +22,42 @@ def display_stats_round(roundno, player_bets, player_balance, player_status,died
 
 
 
-def display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive):
+def display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive,coincount,roulcount,slotcount):
     print()
     print()
     print("=================================================================")
+    print("------------------------FINAL REPORT-----------------------------")
+    print("=================================================================")
     print()
-    print("---------------FINAL REPORT--------------------------------------")
+    print("60 rounds played")
     print()
+    print("Games played")
+    print("--------------")
+    print("Coin toss: ", coincount)
+    print("Roulette: ", roulcount)
+    print("Slots: ", slotcount)
+    print()
+    print("Players")
+    print("--------------")
     print("Players left: ", overallalive)
     print("Players dead: ", dead)
     print()
+    print("Balances: ")
+    print("--------------")
     print("Total money left: ", player_balance.sum())
     print("Maximum balance: ", player_balance.max())
     print("Average balance: ", player_balance[player_status].mean())
     print("Lowest balance: ", player_balance[player_status].min())
+    print()
     noc=player_status & (player_behaviour==0)
     nom=player_status & (player_behaviour==1)
     nor=player_status & (player_behaviour==2)
+    print("Survivors by behaviour")
+    print("--------------")
     print("No. of conservative players left: ", noc.sum())
     print("No. of moderate players left: ", nom.sum())
     print("No. of risky players left: ", nor.sum())
+    print()
+    
 
 

@@ -30,9 +30,12 @@ player_behaviour[choose_moderate]=1
 player_taken[choose_moderate]=True
 
 def run_simulation():
+    coincount=0
+    roulcount=0
+    slotcount=0
     beforeoverall=player_status.sum()
     for i in range(config.rounds):
-        choice=rng.integers(0,2)
+        choice=rng.choice([0,1,2], p=[0.33,0.33,0.34])
         old=player_balance.copy()
         player_bet=np.zeros_like(player_balance)
         cmask= (player_status) & (player_behaviour==0)
@@ -61,11 +64,15 @@ def run_simulation():
         if choice==0:
             games.coin_toss(player_balance, player_status, player_bet)
             gamename= "COIN TOSS"
+            coincount+=1
         elif choice==1:
             games.roulette(player_balance,player_status,player_bet,player_behaviour)
             gamename= "ROULETTE"
-
-
+            roulcount+=1
+        elif choice==2:
+            games.slots(player_balance,player_status,player_bet,player_behaviour)
+            gamename="SLOTS"
+            slotcount+=1
         after=player_status.sum()
         new=player_balance.copy()
         profit=old-new
@@ -74,4 +81,4 @@ def run_simulation():
         time.sleep(1)
     overallalive=player_status.sum()
     dead=beforeoverall-overallalive
-    stats.display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive)
+    stats.display_stats_final(player_balance,player_status,player_behaviour,dead,overallalive,coincount,roulcount,slotcount)
